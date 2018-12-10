@@ -9,15 +9,15 @@
 (defn get-sum [list-of-numbers]
   (reduce + 0 list-of-numbers))
 
-(defn add-till-double [[frequencies changes index]]
-  (let [next-change (nth changes index)
-        new-frequency (+ next-change (last frequencies))]
+(defn add-till-double [frequencies last-frequency changes]
+  (let [next-change (first changes)
+        new-frequency (+ next-change last-frequency)]
 ;;    (println frequencies)
-    (cond (.contains frequencies new-frequency) new-frequency
-          ( = (inc index) (count changes)) (recur [(conj frequencies new-frequency) changes 0])
-          :else (recur [(conj frequencies new-frequency) changes (inc index)]))))
+    (cond (.contains ^clojure.lang.PersistentHashSet frequencies new-frequency) new-frequency
+;          ( = (inc index) (count changes)) (recur [(conj frequencies new-frequency) (rest changes 0])
+          :else (recur (conj frequencies new-frequency) new-frequency (rest changes)))))
     
 (defn -main
   ""
   [& args]
- (print (add-till-double [[0] (get-integers) 0])) )
+ (print (add-till-double #{} 0 (cycle (get-integers)))))
